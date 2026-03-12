@@ -118,30 +118,35 @@
     }
 
     .logo-badge {
+      /* horizontal centering and spacing */
       display: inline-flex;
-      align-items: center;
-      gap: 10px;
+      align-items: center;          /* vertical align image + text */
+      justify-content: center;      /* ensure badge content stays centered when resized */
+      gap: 8px;                     /* space between logo and text, tweak as needed */
+
       background: linear-gradient(135deg, rgba(241,100,30,0.18), rgba(212,82,20,0.08));
       border: 1px solid rgba(241,100,30,0.3);
       border-radius: 100px;
-      padding: 8px 20px;
+
+      /* padding controls the clickable/tappable area
+         change top/bottom for height, left/right for breathing room */
+      padding: 2px 13px;
+
+      /* adjust margin to control spacing from other elements */
       margin-bottom: 28px;
+
       backdrop-filter: blur(12px);
     }
 
     .logo-img {
-      height: 42px;
+      /* change height to scale logo; width auto preserves aspect ratio */
+      height: 60px;
       width: auto;
       border-radius: 6px;
+      display: block;             /* remove extra whitespace below image */
+      padding-bottom: 10px;     
     }
 
-    .logo-dot {
-      width: 8px; height: 8px;
-      background: var(--orange);
-      border-radius: 50%;
-      box-shadow: 0 0 12px var(--orange);
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
 
     @keyframes pulse-dot {
       0%, 100% { box-shadow: 0 0 6px var(--orange); }
@@ -150,11 +155,13 @@
 
     .logo-text {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
+      font-size: 1.35rem;
       font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
+      line-height: 1;             /* match logo height for even vertical centering */
+      margin: 0;                  /* reset any default spacing */
     }
 
     .header h2 {
