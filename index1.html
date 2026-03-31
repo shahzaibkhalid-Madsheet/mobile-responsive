@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Better Homes · Property Deal Engine · Badge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bh-orange:         #E8891A;
+    --bh-orange-mid:     #C96A10;
+    --bh-orange-deep:    #9A4520;
+    --bh-orange-glow:    rgba(232, 137, 26, 0.30);
+    --bh-orange-subtle:  rgba(232, 137, 26, 0.13);
+    --bh-orange-line:    rgba(232, 137, 26, 0.55);
+
+    --bh-dark:           #1A0B02;
+    --bh-dark-card:      #2C1608;
+    --bh-brown:          #7A4520;
+    --bh-muted:          #c25b11;
+    --bh-faint:          #C8A878;
+
+    --bh-bg:             #F5EDE0;
+    --bh-bg-2:           #EDE0CE;
+    --bh-card:           #FFFDF8;
+    --bh-card-inner:     #FAF5EE;
+
+    --bh-text:           #1A0B02;
+    --bh-text-2:         #5A3015;
+    --bh-text-3:         #9A6840;
+
+    --bh-border:         rgba(180, 120, 60, 0.20);
+    --bh-border-strong:  rgba(180, 120, 60, 0.36);
+
+    --r:    10px;
+    --r-lg: 16px;
+    --r-xl: 22px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bh-bg);
+    color: var(--bh-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ══════════════════════════════
+     BACKGROUND
+  ══════════════════════════════ */
+  .bg-scene {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(150deg,
+      #FAF0E2 0%, #F0E2CC 25%, #E8D4B8 50%, #EDD8BC 75%, #F4E6CE 100%);
+  }
+  .bg-scene::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 75% 60% at 8%   8%,  rgba(232,137,26,0.28) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 95%  95%,  rgba(180,80,20,0.22)  0%, transparent 55%),
+      radial-gradient(ellipse 50% 45% at 50%  110%, rgba(210,120,40,0.18) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 35% at 90%  15%,  rgba(240,160,40,0.16) 0%, transparent 45%);
+  }
+  .bg-scene::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      118deg, transparent 0px, transparent 38px,
+      rgba(232,137,26,0.04) 38px, rgba(232,137,26,0.04) 39px);
+  }
+
+  /* ── Bubbles ── */
+  .orb {
+    display: block; position: fixed; border-radius: 50%;
+    pointer-events: none; z-index: 0;
+    animation: floatBubble var(--dur, 36s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  .orb-1 { width:420px; height:420px; top:-140px; left:-160px; --dur:40s; --delay:0s; filter:blur(24px);
+    background: radial-gradient(circle at 35% 35%, rgba(255,200,100,0.75) 0%, rgba(232,137,26,0.42) 40%, rgba(180,80,20,0.16) 70%, transparent 100%);
+    border:1.5px solid rgba(232,137,26,0.42); box-shadow:inset 0 2px 0 rgba(255,240,180,0.65),0 6px 40px rgba(232,137,26,0.22); }
+  .orb-2 { width:300px; height:300px; bottom:5vh; right:-100px; --dur:46s; --delay:-14s; filter:blur(16px);
+    background: radial-gradient(circle at 40% 38%, rgba(255,215,130,0.68) 0%, rgba(210,110,30,0.32) 50%, transparent 100%);
+    border:1.5px solid rgba(220,130,40,0.38); box-shadow:inset 0 2px 0 rgba(255,235,170,0.55),0 4px 28px rgba(210,110,30,0.18); }
+  .orb-3 { width:160px; height:160px; top:38vh; left:74%; --dur:32s; --delay:-9s; filter:blur(5px);
+    background: radial-gradient(circle at 38% 36%, rgba(255,230,140,0.88) 0%, rgba(232,137,26,0.48) 45%, rgba(180,80,20,0.14) 75%, transparent 100%);
+    border:1.5px solid rgba(232,137,26,0.52); box-shadow:inset 0 2px 0 rgba(255,248,200,0.75),0 3px 18px rgba(232,137,26,0.26); }
+  .orb-4 { width:200px; height:200px; top:55vh; left:-60px; --dur:50s; --delay:-20s; filter:blur(18px);
+    background: radial-gradient(circle at 40% 40%, rgba(245,190,90,0.60) 0%, rgba(200,100,20,0.28) 55%, transparent 100%);
+    border:1.5px solid rgba(210,120,30,0.30); box-shadow:inset 0 2px 0 rgba(255,230,160,0.50),0 4px 22px rgba(200,100,20,0.16); }
+  .orb-5 { width:120px; height:120px; top:12vh; right:8%; --dur:36s; --delay:-6s; filter:blur(8px);
+    background: radial-gradient(circle at 36% 36%, rgba(255,220,120,0.80) 0%, rgba(220,130,30,0.38) 50%, transparent 100%);
+    border:1.5px solid rgba(230,140,40,0.42); box-shadow:inset 0 2px 0 rgba(255,245,190,0.70),0 2px 14px rgba(220,130,30,0.22); }
+  .orb-6 { width:90px; height:90px; bottom:18vh; left:12%; --dur:28s; --delay:-16s; filter:blur(6px);
+    background: radial-gradient(circle at 38% 36%, rgba(255,210,100,0.85) 0%, rgba(215,110,25,0.40) 50%, transparent 100%);
+    border:1.5px solid rgba(225,130,35,0.45); box-shadow:inset 0 1px 0 rgba(255,240,180,0.65),0 2px 10px rgba(215,110,25,0.20); }
+
+  @keyframes floatBubble {
+    0%   { transform: translate(0px,   0px)  scale(1.000); }
+    15%  { transform: translate(12px, -18px) scale(1.015); }
+    35%  { transform: translate(-8px,  22px) scale(0.985); }
+    55%  { transform: translate(16px,  10px) scale(1.010); }
+    75%  { transform: translate(-12px,-14px) scale(0.992); }
+    100% { transform: translate(0px,   0px)  scale(1.000); }
+  }
+
+  /* ══════════════════════════════
+     WRAPPER
+  ══════════════════════════════ */
+  .wrapper {
+    position: relative; z-index: 2;
+    max-width: 760px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ══════════════════════════════
+     HEADER
+  ══════════════════════════════ */
+  .site-header {
+    position: relative; padding: 36px 0 0; margin-bottom: 0;
+    animation: fadeDown 0.7s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0; width: 100%;
+  }
+
+  /* ── LOGO MARK — single unified block, no duplicates ── */
+  .header-logo-mark {
+    width: 180px;
+    height: 120px;
+    justify-self: start;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    background: linear-gradient(135deg,
+      rgba(232,137,26,0.15) 0%,
+      rgba(180,80,20,0.08)  60%,
+      rgba(240,160,40,0.10) 100%);
+    border: 1.5px solid rgba(232,137,26,0.45);
+    border-radius: 18px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,200,100,0.12) inset,
+      0 2px 16px rgba(232,137,26,0.18),
+      0 4px 24px rgba(26,11,2,0.08);
+  }
+  .header-logo-mark:hover { transform: scale(1.02); }
+  .header-logo-mark img {
+    width: 100%; height: 100%; object-fit: contain; display: block;
+  }
+
+  .header-rule {
+    width: 1px; height: 56px; margin: 0 22px;
+    background: linear-gradient(180deg,
+      transparent 0%, var(--bh-orange-line) 25%,
+      rgba(180,80,20,0.65) 50%, var(--bh-orange-line) 75%, transparent 100%);
+  }
+
+  .header-text {
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: 3px; white-space: nowrap;
+  }
+
+  /* ── single .header-brand definition ── */
+  .header-brand {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+    font-weight: 700; line-height: 1; letter-spacing: 0.05em;
+    background: linear-gradient(110deg,#1A0B02 0%,#8A4818 40%,#E8891A 75%,#F5A830 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .header-tagline {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(0.82rem,1.6vw,1.0rem);
+    font-weight: 600; font-style: italic; letter-spacing: 0.08em;
+    color: var(--bh-brown); text-transform: uppercase; opacity: 0.85;
+  }
+
+  /* ── EYEBROW ── */
+  .header-eyebrow {
+    display: flex; justify-content: center; align-items: center;
+    padding: 20px 0 28px;
+  }
+  .header-eyebrow svg { width: 300px; height: 14px; overflow: visible; }
+
+  .header-firebar, .header-hero, .header-top-row,
+  .header-logo-col, .header-divider-rule,
+  .header-text-col, .header-deco { display: none !important; }
+
+  /* ══════════════════════════════
+     SECTION CARDS
+  ══════════════════════════════ */
+  .section-card {
+    background: var(--bh-card); border-radius: var(--r-xl);
+    border: 1px solid var(--bh-border);
+    box-shadow: 0 0 0 1px var(--bh-orange-line), 0 2px 12px rgba(26,11,2,0.07), 0 8px 32px rgba(26,11,2,0.04);
+    margin-bottom: 18px; overflow: hidden; position: relative;
+    animation: fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .section-card::before {
+    content: ''; position: absolute; top:0; left:0; right:0; height:2.5px;
+    background: linear-gradient(90deg, transparent 0%, var(--bh-orange) 20%, #F5A830 50%, var(--bh-orange) 80%, transparent 100%);
+    opacity: 0.90;
+  }
+  .section-card::after { display: none; }
+  .section-card:hover {
+    box-shadow: 0 0 0 1px rgba(232,137,26,0.65), 0 4px 20px var(--bh-orange-glow), 0 12px 40px rgba(26,11,2,0.06);
+    transition: box-shadow 0.25s ease;
+  }
+  .section-card:nth-child(1) { animation-delay:0.08s; }
+  .section-card:nth-child(2) { animation-delay:0.15s; }
+  .section-card:nth-child(3) { animation-delay:0.22s; }
+  .section-card:nth-child(4) { animation-delay:0.29s; }
+  .section-card:nth-child(5) { animation-delay:0.36s; }
+  .section-card:nth-child(6) { animation-delay:0.43s; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .section-title {
+    display:flex; align-items:center; gap:11px;
+    padding:18px 26px 16px; border-bottom:1px solid var(--bh-border);
+    background:var(--bh-card-inner); margin-bottom:0;
+  }
+  .section-title h2 {
+    font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--bh-text-2);
+  }
+  .section-icon {
+    width:28px; height:28px; background:var(--bh-orange-subtle);
+    border:1px solid var(--bh-orange-line); border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.82rem; flex-shrink:0;
+  }
+  .section-card > *:not(.section-title):not(style),
+  .section-card > .form-grid,
+  .section-card > .field,
+  .section-card > .image-grid { padding: 22px 26px; }
+
+  /* ══════════════════════════════
+     FORM
+  ══════════════════════════════ */
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .field { display:flex; flex-direction:column; gap:7px; }
+  .field label { font-size:0.69rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:var(--bh-brown); }
+  .req { color:var(--bh-orange); margin-left:2px; }
+
+  .field input, .field select, .field textarea {
+    background:var(--bh-card-inner); border:1px solid var(--bh-border-strong);
+    border-radius:var(--r); padding:11px 14px;
+    font-family:'DM Sans',sans-serif; font-size:0.90rem; color:var(--bh-text);
+    width:100%; transition:border-color 0.18s ease,box-shadow 0.18s ease;
+    -webkit-appearance:none; appearance:none;
+  }
+  .field input::placeholder, .field textarea::placeholder { color:var(--bh-faint); }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline:none; border-color:var(--bh-orange); background:#FFFFFF;
+    box-shadow:0 0 0 3px var(--bh-orange-glow);
+  }
+  .field input.error, .field select.error, .field textarea.error {
+    border-color:#c03030; box-shadow:0 0 0 3px rgba(192,48,48,0.14);
+  }
+  .field select {
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath fill='%23C96A10' d='M5.5 7L0 0h11z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; cursor:pointer;
+  }
+  .field select option { background:#F5EDE0; color:#1A0B02; }
+  .field textarea { resize:vertical; min-height:108px; line-height:1.65; }
+
+  /* ══════════════════════════════
+     STRATEGY PILLS
+  ══════════════════════════════ */
+  .strategy-pills { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0; }
+  .strategy-pill { position:relative; }
+  .strategy-pill input { position:absolute; opacity:0; width:0; height:0; }
+  .strategy-pill-label {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; padding:22px 16px; border:1px solid var(--bh-border-strong);
+    border-radius:var(--r-lg); background:var(--bh-card-inner); cursor:pointer; transition:all 0.20s ease;
+  }
+  .strategy-pill-label:hover {
+    border-color:var(--bh-orange-line); background:var(--bh-orange-subtle);
+    box-shadow:0 0 0 1px var(--bh-orange-line),0 4px 18px var(--bh-orange-glow); transform:translateY(-2px);
+  }
+  .strategy-pill input:checked + .strategy-pill-label {
+    border-color:var(--bh-orange); background:rgba(232,137,26,0.12);
+    box-shadow:0 0 0 2px var(--bh-orange),0 6px 22px var(--bh-orange-glow); transform:translateY(-2px);
+  }
+  .pill-icon { font-size:1.6rem; }
+  .pill-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:700; color:var(--bh-text-2); letter-spacing:0.04em; }
+
+  #refurbField { overflow:hidden; max-height:120px; transition:opacity 0.28s ease,max-height 0.32s ease,margin 0.28s ease; }
+  #refurbField.hidden-field { opacity:0; max-height:0; margin:0; pointer-events:none; }
+
+  /* ══════════════════════════════
+     MORTGAGE PREVIEW
+  ══════════════════════════════ */
+  #mortgagePreview {
+    background:rgba(232,137,26,0.10) !important;
+    border:1px solid rgba(232,137,26,0.40) !important;
+    border-radius:var(--r) !important;
+  }
+
+  /* ══════════════════════════════
+     IMAGE UPLOAD
+  ══════════════════════════════ */
+  .image-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:0; }
+  .img-slot { position:relative; }
+  .img-slot input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; z-index:2; }
+  .img-drop {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:5px; height:86px; border:1.5px dashed rgba(200,120,40,0.42);
+    border-radius:var(--r); background:var(--bh-card-inner); cursor:pointer; transition:all 0.20s ease; text-align:center;
+  }
+  .img-drop:hover {
+    border-color:var(--bh-orange); border-style:solid; background:var(--bh-orange-subtle);
+    box-shadow:0 0 0 1px var(--bh-orange-line),0 2px 12px var(--bh-orange-glow); transform:scale(1.02);
+  }
+  .img-drop.has-file { border-color:#6AA040; border-style:solid; background:rgba(106,160,64,0.08); }
+  .img-drop .drop-icon { font-size:1.2rem; }
+  .img-drop .drop-text { font-size:0.66rem; color:var(--bh-muted); letter-spacing:0.04em; }
+  .img-drop.has-file .drop-text { color:#4e7820; }
+
+  /* ══════════════════════════════
+     SUBMIT BUTTON
+  ══════════════════════════════ */
+  .submit-btn {
+    width:100%; padding:17px 24px;
+    background:linear-gradient(135deg,#F09020 0%,#C96A10 50%,#9A4520 100%);
+    color:#FFFFFF; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase; border:none; border-radius:var(--r-lg);
+    cursor:pointer; position:relative; overflow:hidden; transition:transform 0.22s ease,box-shadow 0.22s ease;
+    box-shadow:0 1px 0 rgba(255,220,150,0.28) inset,0 4px 22px rgba(232,137,26,0.45),0 1px 6px rgba(0,0,0,0.10);
+    text-shadow:0 1px 2px rgba(26,11,2,0.25);
+  }
+  .submit-btn::before {
+    content:''; position:absolute; top:0; left:-65%; width:55%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+    transform:skewX(-18deg); transition:left 0.50s ease;
+  }
+  .submit-btn:hover::before { left:115%; }
+  .submit-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 1px 0 rgba(255,220,150,0.32) inset,0 8px 32px rgba(232,137,26,0.55),0 3px 10px rgba(0,0,0,0.12);
+  }
+  .submit-btn:active { transform:translateY(0); }
+  .submit-btn:disabled { background:rgba(180,130,80,0.22); color:rgba(26,11,2,0.28); cursor:not-allowed; transform:none; box-shadow:none; }
+
+  /* ══════════════════════════════
+     LOADING
+  ══════════════════════════════ */
+  .loading-box { display:flex; flex-direction:column; align-items:center; gap:14px; padding:28px; text-align:center; }
+  .loading-ring {
+    width:40px; height:40px; border:2.5px solid rgba(232,137,26,0.18);
+    border-top-color:var(--bh-orange); border-right-color:var(--bh-orange-mid);
+    border-radius:50%; animation:spin 0.80s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-box p     { color:var(--bh-brown); font-size:0.88rem; }
+  .loading-box small { color:var(--bh-muted); opacity:0.65; }
+
+  /* ══════════════════════════════
+     RESULT
+  ══════════════════════════════ */
+  .result-box { padding:18px 22px; border-radius:var(--r); font-weight:500; }
+  .result-box.success { background:rgba(106,160,64,0.10); border:1px solid rgba(106,160,64,0.35); color:#3e6818; }
+  .result-box.error   { background:rgba(160,60,30,0.07);  border:1px solid rgba(160,60,30,0.26);  color:var(--bh-brown); }
+  .result-box a {
+    display:inline-block; margin-top:10px; padding:9px 22px;
+    background:linear-gradient(135deg,#E8891A,#9A4520); color:#fff; border-radius:8px;
+    text-decoration:none; font-weight:700; font-size:0.87rem; letter-spacing:0.06em;
+    box-shadow:0 3px 16px rgba(232,137,26,0.35); transition:box-shadow 0.2s ease,transform 0.2s ease;
+  }
+  .result-box a:hover { box-shadow:0 6px 24px rgba(232,137,26,0.48); transform:translateY(-1px); }
+
+  /* ══════════════════════════════
+     MISC
+  ══════════════════════════════ */
+  .hint { font-size:0.72rem; color:var(--bh-muted); margin-top:-4px; }
+  .footer {
+    text-align:center; padding:20px; font-size:0.70rem;
+    color:var(--bh-brown); letter-spacing:0.10em; text-transform:uppercase;
+    opacity:0.80; margin-top:8px;
+  }
+  .hidden { display:none !important; }
+
+  /* ══════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════ */
+  @media (max-width: 640px) {
+    .wrapper         { padding:0 16px 60px; }
+    .form-grid       { grid-template-columns:1fr; }
+    .form-grid .full { grid-column:1; }
+    .image-grid      { grid-template-columns:repeat(2,1fr); }
+    .orb-1 { width:220px; height:220px; top:-60px; left:-80px; }
+    .orb-2 { width:160px; height:160px; }
+    .orb-4 { display:none; }
+    .orb-5 { display:none; }
+    .site-header     { padding:16px 0 0; }
+    .header-inner    { grid-template-columns:1fr; justify-items:center; gap:10px; }
+    .header-logo-mark {
+      width:100px; height:70px;      /* mobile size — overrides desktop */
+      justify-self:center;
+    }
+    .header-rule     { display:none; }
+    .header-brand    { font-size:1.45rem; }
+    .header-tagline  { font-size:0.72rem; }
+    .header-spacer   { display:none !important; }
+    .header-eyebrow  { padding:10px 0 18px; }
+    .header-eyebrow svg { width:180px; }
+    .strategy-pills  { grid-template-columns:1fr 1fr; }
+    .section-card > *:not(.section-title) { padding:18px 18px; }
+    .section-title   { padding:15px 18px 13px; }
+  }
+
+  @media (max-width: 400px) {
+    .site-header      { padding:18px 0 0; }
+    .header-logo-mark { width:80px; height:56px; }
+    .header-brand     { font-size:1.25rem; }
+    .header-inner     { gap:8px; }
+    .header-eyebrow   { padding:10px 0 16px; }
+    .header-eyebrow svg { width:140px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="bg-scene">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="orb orb-5"></div>
+  <div class="orb orb-6"></div>
+</div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- col 1: logo pinned left -->
+      <div class="header-logo-mark">
+        <img
+          src="https://lh3.googleusercontent.com/d/1aLoEUUP0CepvN1kTsPk-Pz5XSy-IEqqp"
+          alt="Better Homes logo"
+          onerror="this.src='https://lh3.googleusercontent.com/d/1d8u3pIgB1WIdKevSqfwYyWCMpvF22z2N';">
+      </div>
+      <!-- col 2: text centered independently -->
+      <div style="display:flex; align-items:center; gap:18px;">
+        <div class="header-rule"></div>
+        <div class="header-text">
+          <h1 class="header-brand">Better Homes</h1>
+          <p class="header-tagline">Passionate About Property</p>
+        </div>
+      </div>
+      <!-- col 3: empty spacer — mirrors logo width so text stays dead center -->
+      <div class="header-spacer" style="width:150px;"></div>
+    </div>
+  </header>
+
+  <!-- EYEBROW — straight lines + center diamond -->
+  <div class="header-eyebrow">
+    <svg viewBox="0 0 300 14" xmlns="http://www.w3.org/2000/svg">
+      <!-- left line -->
+      <line x1="0" y1="7" x2="128" y2="7"
+        stroke="#C96A10" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+      <!-- left inner short line closer to diamond -->
+      <line x1="108" y1="7" x2="128" y2="7"
+        stroke="#C96A10" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+      <!-- center diamond -->
+      <polygon points="150,1 157,7 150,13 143,7"
+        fill="#E8891A" opacity="0.90"/>
+      <!-- right inner short line closer to diamond -->
+      <line x1="172" y1="7" x2="192" y2="7"
+        stroke="#C96A10" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+      <!-- right line -->
+      <line x1="172" y1="7" x2="300" y2="7"
+        stroke="#C96A10" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+      <!-- two small side dots flanking diamond -->
+      <circle cx="136" cy="7" r="2.2" fill="#C96A10" opacity="0.65"/>
+      <circle cx="164" cy="7" r="2.2" fill="#C96A10" opacity="0.65"/>
+    </svg>
+  </div>
+
+  <!-- STRATEGY -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">🏛</div>
+      <h2>Investment Strategy</h2>
+    </div>
+    <div class="field">
+      <label>Select Strategy <span class="req">*</span></label>
+      <div class="strategy-pills">
+        <label class="strategy-pill">
+          <input type="radio" name="strategy" id="stratBRRR" value="BRRR">
+          <div class="strategy-pill-label">
+            <span class="pill-icon">🔄</span>
+            <span class="pill-title">BRRR</span>
+          </div>
+        </label>
+        <label class="strategy-pill">
+          <input type="radio" name="strategy" id="stratBTL" value="BTL">
+          <div class="strategy-pill-label">
+            <span class="pill-icon">🏠</span>
+            <span class="pill-title">BTL</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPERTY & COSTS -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">📍</div>
+      <h2>Property &amp; Costs</h2>
+    </div>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Property Address <span class="req">*</span></label>
+        <input type="text" id="propertyAddress" placeholder="e.g. 12 High Street, Manchester, M1 1AB" required>
+      </div>
+      <div class="field">
+        <label>Purchase Price (£) <span class="req">*</span></label>
+        <input type="number" id="purchasePrice" min="0" step="0.01" placeholder="120,000" required>
+      </div>
+      <div class="field" id="refurbField">
+        <label>Refurb Cost (£) <span class="req">*</span></label>
+        <input type="number" id="refurbCost" min="0" step="0.01" placeholder="20,000">
+      </div>
+      <div class="field">
+        <label>Solicitor Fees (£)</label>
+        <input type="number" id="solicitorFees" min="0" step="0.01" placeholder="1,500">
+      </div>
+      <div class="field">
+        <label>Sourcing Fee (£)</label>
+        <input type="number" id="sourcingFee" min="0" step="0.01" placeholder="3,000">
+      </div>
+      <div class="field">
+        <label>Broker / Auction Fees (£)</label>
+        <input type="number" id="brokerFees" min="0" step="0.01" placeholder="500">
+      </div>
+      <div class="field">
+        <label>End Value / GDV (£) <span class="req">*</span></label>
+        <input type="number" id="endValue" min="0" step="0.01" placeholder="165,000" required>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME & CASH FLOW -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">💷</div>
+      <h2>Income &amp; Cash Flow</h2>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Rent (PCM £) <span class="req">*</span></label>
+        <input type="number" id="rentPCM" min="0" step="0.01" placeholder="850" required>
+      </div>
+      <div class="field">
+        <label>Monthly Costs — Mgmt &amp; Other (£) <span class="req">*</span></label>
+        <input type="number" id="costs" min="0" step="0.01" placeholder="600" required>
+      </div>
+      <div class="field">
+        <label>Interest Rate (%) <span class="req">*</span></label>
+        <input type="number" id="interestRate" min="0" max="30" step="0.01" placeholder="4.8" required oninput="calcEstMortgage()">
+      </div>
+    </div>
+    <div id="mortgagePreview" style="display:none; margin-top:18px; padding:14px 18px; border-radius:10px;">
+      <div style="font-size:0.68rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--bh-brown); opacity:0.75; margin-bottom:5px;">
+        Est. Monthly Mortgage (Interest-Only)
+      </div>
+      <div id="mortgageValue" style="font-size:1.45rem; font-weight:700; color:var(--bh-orange); font-family:'Cormorant Garamond',serif;">
+        ---
+      </div>
+      <div style="font-size:0.70rem; color:var(--bh-muted); opacity:0.60; margin-top:3px;">
+        75% LTV × interest rate ÷ 12 · Interest-only basis
+      </div>
+    </div>
+  </div>
+
+  <!-- DEAL INTELLIGENCE -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">📝</div>
+      <h2>Deal Intelligence</h2>
+    </div>
+    <div class="form-grid">
+      <div class="field full">
+        <label>About the Deal <span class="req">*</span></label>
+        <textarea id="aboutDeal" placeholder="Describe the deal opportunity, location highlights, rental demand, exit strategy…" required></textarea>
+      </div>
+      <div class="field">
+        <label>Comparable 1 URL</label>
+        <input type="url" id="comp1Url" placeholder="https://www.rightmove.co.uk/…">
+      </div>
+      <div class="field">
+        <label>Comparable 2 URL</label>
+        <input type="url" id="comp2Url" placeholder="https://www.rightmove.co.uk/…">
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPERTY PHOTOS -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">📷</div>
+      <h2>Property Photos</h2>
+    </div>
+    <p class="hint" style="padding: 14px 26px 0; margin-bottom: -6px;">Up to 4 images · JPEG or PNG · Max 20MB each</p>
+    <div class="image-grid">
+      <div class="img-slot">
+        <input type="file" id="image1" accept="image/jpeg,image/png" onchange="onImg(this,'img1lbl','img1txt')">
+        <div class="img-drop" id="img1lbl"><span class="drop-icon">＋</span><span class="drop-text" id="img1txt">Photo 1</span></div>
+      </div>
+      <div class="img-slot">
+        <input type="file" id="image2" accept="image/jpeg,image/png" onchange="onImg(this,'img2lbl','img2txt')">
+        <div class="img-drop" id="img2lbl"><span class="drop-icon">＋</span><span class="drop-text" id="img2txt">Photo 2</span></div>
+      </div>
+      <div class="img-slot">
+        <input type="file" id="image3" accept="image/jpeg,image/png" onchange="onImg(this,'img3lbl','img3txt')">
+        <div class="img-drop" id="img3lbl"><span class="drop-icon">＋</span><span class="drop-text" id="img3txt">Photo 3</span></div>
+      </div>
+      <div class="img-slot">
+        <input type="file" id="image4" accept="image/jpeg,image/png" onchange="onImg(this,'img4lbl','img4txt')">
+        <div class="img-drop" id="img4lbl"><span class="drop-icon">＋</span><span class="drop-text" id="img4txt">Photo 4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="section-card" style="padding: 20px 26px;">
+    <button class="submit-btn" id="submitBtn" onclick="submitDeal()">
+      ✦ &nbsp; Generate Deal Pack
+    </button>
+    <div id="loadingState" class="loading-box hidden">
+      <div class="loading-ring"></div>
+      <p>Crafting your investment pack…<br><small>This can take up to 60 seconds.</small></p>
+    </div>
+    <div id="resultArea" class="result-box hidden" style="margin-top:16px;"></div>
+  </div>
+
+  <footer class="footer">
+    Property Deal Engine &nbsp;·&nbsp; Better Homes &nbsp;·&nbsp; Passionate About Property
+  </footer>
+
+</div>
+
+<script>
+// ── On load: verify auth + pre-fill interest rate from config ─
+window.addEventListener('load', function() {
+
+  // Auth check
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result && result.indexOf('OK:') === 0) {
+        console.log('Auth OK: ' + result);
+      } else {
+        console.warn('Auth issue: ' + result);
+      }
+    })
+    .withFailureHandler(function(err) {
+      console.error('Auth check failed: ' + err.message);
+    })
+    .authCheck();
+
+  // Pre-fill interest rate field from DEFAULT_INTEREST_RATE config
+  google.script.run
+    .withSuccessHandler(function(rate) {
+      var field = document.getElementById('interestRate');
+      if (field && rate) {
+        field.value = (parseFloat(rate) * 100).toFixed(2); // 0.048 → 4.80
+        calcEstMortgage(); // update preview immediately if other fields already filled
+      }
+    })
+    .withFailureHandler(function() {
+      // silent fail — field stays empty, agent types manually
+    })
+    .getConfig('DEFAULT_INTEREST_RATE');
+
+});
+
+// ── Strategy toggle ───────────────────────────────────────────
+document.querySelectorAll('input[name="strategy"]').forEach(function(r) {
+  r.addEventListener('change', function() {
+    var f = document.getElementById('refurbField');
+    if (this.value === 'BTL') {
+      f.classList.add('hidden-field');
+      document.getElementById('refurbCost').value = 0;
+    } else {
+      f.classList.remove('hidden-field');
+    }
+    calcEstMortgage(); // recalculate when strategy changes
+  });
+});
+
+// ── Image label update ────────────────────────────────────────
+function onImg(input, dropId, txtId) {
+  var drop = document.getElementById(dropId);
+  var txt  = document.getElementById(txtId);
+  if (input.files && input.files[0]) {
+    var name = input.files[0].name;
+    txt.textContent = name.length > 14 ? name.slice(0,12) + '…' : name;
+    drop.classList.add('has-file');
+    drop.querySelector('.drop-icon').textContent = '✓';
+  } else {
+    drop.classList.remove('has-file');
+    drop.querySelector('.drop-icon').textContent = '＋';
+  }
+}
+
+// ── URL validator ─────────────────────────────────────────────
+function isValidUrl(str) {
+  if (!str || !str.trim()) return true;
+  try {
+    var url = new URL(str.trim());
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch(e) {
+    return false;
+  }
+}
+
+// ── Est. Mortgage calculator — fires on every keystroke ───────
+function calcEstMortgage() {
+  var stratEl   = document.querySelector('input[name="strategy"]:checked');
+  var strategy  = stratEl ? stratEl.value : '';
+  var rateInput = parseFloat(document.getElementById('interestRate').value);
+  var purchase  = parseFloat(document.getElementById('purchasePrice').value) || 0;
+  var endVal    = parseFloat(document.getElementById('endValue').value)       || 0;
+  var preview   = document.getElementById('mortgagePreview');
+  var display   = document.getElementById('mortgageValue');
+
+  if (!strategy || isNaN(rateInput) || rateInput <= 0) {
+    preview.style.display = 'none';
+    return;
+  }
+
+  var annualRate = rateInput / 100;                           // 4.8 → 0.048
+  var ltvBase    = (strategy === 'BRRR') ? endVal : purchase; // BRRR = end value, BTL = purchase
+  var ltv75      = ltvBase * 0.75;
+  var monthly    = (ltv75 * annualRate) / 12;
+
+  if (ltvBase <= 0 || monthly <= 0) {
+    preview.style.display = 'none';
+    return;
+  }
+
+  display.textContent   = '£' + monthly.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  preview.style.display = 'block';
+}
+
+// ── Form reset ────────────────────────────────────────────────
+function resetForm() {
+  [
+    'propertyAddress','purchasePrice','refurbCost','solicitorFees',
+    'sourcingFee','brokerFees','endValue','rentPCM','costs',
+    'aboutDeal','comp1Url','comp2Url',
+    'interestRate'
+  ].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('error'); }
+  });
+
+  // hide mortgage preview on reset
+  document.getElementById('mortgagePreview').style.display = 'none';
+
+  document.querySelectorAll('input[name="strategy"]').forEach(function(r) {
+    r.checked = false;
+  });
+
+  var refurb = document.getElementById('refurbField');
+  if (refurb) refurb.classList.remove('hidden-field');
+
+  [
+    {id:'image1', drop:'img1lbl', text:'img1txt'},
+    {id:'image2', drop:'img2lbl', text:'img2txt'},
+    {id:'image3', drop:'img3lbl', text:'img3txt'},
+    {id:'image4', drop:'img4lbl', text:'img4txt'}
+  ].forEach(function(img) {
+
+    var oldInput = document.getElementById(img.id);
+
+    if (oldInput) {
+      var newInput = oldInput.cloneNode(true);
+      newInput.onchange = function() {
+        onImg(newInput, img.drop, img.text);
+      };
+      oldInput.parentNode.replaceChild(newInput, oldInput);
+    }
+
+    var drop = document.getElementById(img.drop);
+    var txt  = document.getElementById(img.text);
+
+    if (drop) {
+      drop.classList.remove('has-file');
+      var icon = drop.querySelector('.drop-icon');
+      if (icon) icon.textContent = '＋';
+    }
+
+    if (txt) {
+      txt.textContent = 'Photo ' + img.id.replace('image','');
+    }
+  });
+
+  // re-fill interest rate from config after reset
+  google.script.run
+    .withSuccessHandler(function(rate) {
+      var field = document.getElementById('interestRate');
+      if (field && rate) {
+        field.value = (parseFloat(rate) * 100).toFixed(2);
+      }
+    })
+    .withFailureHandler(function() {})
+    .getConfig('DEFAULT_INTEREST_RATE');
+}
+
+// ── Base64 encoder ────────────────────────────────────────────
+function readAsBase64(id) {
+  return new Promise(function(resolve) {
+    var input = document.getElementById(id);
+    if (!input || !input.files || !input.files[0]) { resolve(''); return; }
+    var file = input.files[0];
+    if (file.size > 20 * 1024 * 1024) {
+      alert('"' + file.name + '" exceeds 5MB and will be skipped.');
+      resolve('');
+      return;
+    }
+    var r = new FileReader();
+    r.onload = function(e) { resolve(e.target.result); };
+    r.onerror = function() { resolve(''); };
+    r.readAsDataURL(file);
+  });
+}
+
+// ── Submit ────────────────────────────────────────────────────
+function submitDeal() {
+  setResult('', '');
+
+  var stratEl = document.querySelector('input[name="strategy"]:checked');
+  if (!stratEl) { alert('Please select BRRR or BTL.'); return; }
+  var strategy = stratEl.value;
+
+  var ok = true;
+  var errorMsg = '';
+
+  // Required fields
+  var required = [
+    'propertyAddress','purchasePrice','endValue','rentPCM','costs',
+    'aboutDeal','interestRate'
+  ];
+  if (strategy === 'BRRR') required.push('refurbCost');
+
+  required.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el || !el.value.toString().trim()) {
+      el.classList.add('error');
+      ok = false;
+      if (!errorMsg) errorMsg = 'Please fill all required fields.';
+    } else {
+      el.classList.remove('error');
+    }
+  });
+
+  // URL validation
+  ['comp1Url','comp2Url'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!isValidUrl(el.value)) {
+      el.classList.add('error');
+      ok = false;
+      if (!errorMsg) errorMsg = 'Invalid URL format (must start with http/https).';
+    } else {
+      el.classList.remove('error');
+    }
+  });
+
+  // Numeric checks
+  var numericIds = [
+    'purchasePrice','refurbCost','solicitorFees','sourcingFee',
+    'brokerFees','endValue','rentPCM','costs','interestRate'
+  ];
+
+  numericIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.value !== '') {
+      var val = Number(el.value);
+      if (isNaN(val)) {
+        el.classList.add('error');
+        ok = false;
+        if (!errorMsg) errorMsg = 'Only numbers are allowed.';
+      } else if (val < 0) {
+        el.classList.add('error');
+        ok = false;
+        if (!errorMsg) errorMsg = 'Negative values are not allowed.';
+      }
+    }
+  });
+
+  // Zero check (critical fields only)
+  var purchase = Number(document.getElementById('purchasePrice').value);
+  var endVal   = Number(document.getElementById('endValue').value);
+
+  if (purchase === 0 || endVal === 0) {
+    document.getElementById('purchasePrice').classList.add('error');
+    document.getElementById('endValue').classList.add('error');
+    ok = false;
+    if (!errorMsg) errorMsg = 'Purchase price and End value must be greater than 0.';
+  }
+
+  if (!ok) {
+    setResult('error', errorMsg);
+    return;
+  }
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('loadingState').classList.remove('hidden');
+
+  Promise.all([
+    readAsBase64('image1'),
+    readAsBase64('image2'),
+    readAsBase64('image3'),
+    readAsBase64('image4')
+  ]).then(function(imgs) {
+
+    var payload = {
+      strategy:        strategy,
+      propertyAddress: document.getElementById('propertyAddress').value.trim(),
+      purchasePrice:   Number(document.getElementById('purchasePrice').value),
+      refurbCost:      strategy === 'BTL' ? 0 : Number(document.getElementById('refurbCost').value),
+      solicitorFees:   Number(document.getElementById('solicitorFees').value) || 0,
+      sourcingFee:     Number(document.getElementById('sourcingFee').value)   || 0,
+      brokerFees:      Number(document.getElementById('brokerFees').value)    || 0,
+      endValue:        Number(document.getElementById('endValue').value),
+      rentPCM:         Number(document.getElementById('rentPCM').value),
+      costs:           Number(document.getElementById('costs').value),
+      interestRate:    Number(document.getElementById('interestRate').value) / 100, // % → decimal
+      aboutDeal:       document.getElementById('aboutDeal').value.trim(),
+      comp1Url:        document.getElementById('comp1Url').value.trim(),
+      comp2Url:        document.getElementById('comp2Url').value.trim(),
+      images:          imgs
+    };
+
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(onFailure)
+      .processDeal(payload);
+
+  }).catch(onFailure);
+}
+
+// ── Callbacks ─────────────────────────────────────────────────
+function onSuccess(pdfUrl) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('submitBtn').disabled = false;
+
+  if (pdfUrl) {
+    resetForm();
+    setResult('success',
+      '✓ Deal pack generated successfully!<br>' +
+      '<a href="' + pdfUrl + '" target="_blank">Open PDF</a>'
+    );
+  } else {
+    setResult('error', 'No PDF URL returned.');
+  }
+}
+
+function onFailure(err) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('submitBtn').disabled = false;
+  setResult('error', 'Error: ' + ((err && err.message) ? err.message : err));
+}
+
+function setResult(type, html) {
+  var el = document.getElementById('resultArea');
+  if (!type) { el.className = 'result-box hidden'; el.innerHTML = ''; return; }
+  el.className = 'result-box ' + type;
+  el.innerHTML = html;
+  el.classList.remove('hidden');
+}
+
+// ── Wire all mortgage-relevant fields to live calculator ──────
+document.getElementById('purchasePrice').addEventListener('input', calcEstMortgage);
+document.getElementById('endValue').addEventListener('input', calcEstMortgage);
+document.getElementById('interestRate').addEventListener('input', calcEstMortgage);
+
+// ── Clear error on input ──────────────────────────────────────
+document.querySelectorAll('input, textarea').forEach(function(el) {
+  el.addEventListener('input', function() {
+    el.classList.remove('error');
+  });
+});
+</script>
+</body>
+</html>
